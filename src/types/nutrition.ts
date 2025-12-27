@@ -28,6 +28,70 @@ export interface DailyLog {
 
 // Common food database with approximate nutrition per 100g
 export const FOOD_DATABASE: Record<string, { calories: number; protein: number; carbs: number; fat: number; servingSize: number }> = {
+  // Indian Foods
+  'dal': { calories: 116, protein: 9, carbs: 20, fat: 1, servingSize: 150 },
+  'dal tadka': { calories: 150, protein: 9, carbs: 20, fat: 5, servingSize: 150 },
+  'dal makhani': { calories: 200, protein: 9, carbs: 18, fat: 10, servingSize: 150 },
+  'rajma': { calories: 140, protein: 9, carbs: 23, fat: 2, servingSize: 150 },
+  'chole': { calories: 180, protein: 10, carbs: 27, fat: 4, servingSize: 150 },
+  'chana masala': { calories: 180, protein: 10, carbs: 27, fat: 4, servingSize: 150 },
+  'paneer': { calories: 265, protein: 18, carbs: 4, fat: 20, servingSize: 100 },
+  'palak paneer': { calories: 220, protein: 12, carbs: 8, fat: 16, servingSize: 150 },
+  'shahi paneer': { calories: 280, protein: 12, carbs: 10, fat: 22, servingSize: 150 },
+  'paneer butter masala': { calories: 300, protein: 12, carbs: 12, fat: 24, servingSize: 150 },
+  'butter chicken': { calories: 250, protein: 20, carbs: 8, fat: 16, servingSize: 150 },
+  'chicken tikka masala': { calories: 230, protein: 22, carbs: 10, fat: 12, servingSize: 150 },
+  'tandoori chicken': { calories: 180, protein: 25, carbs: 5, fat: 7, servingSize: 150 },
+  'chicken biryani': { calories: 350, protein: 18, carbs: 45, fat: 12, servingSize: 250 },
+  'veg biryani': { calories: 280, protein: 8, carbs: 48, fat: 8, servingSize: 250 },
+  'biryani': { calories: 320, protein: 15, carbs: 45, fat: 10, servingSize: 250 },
+  'pulao': { calories: 220, protein: 5, carbs: 40, fat: 5, servingSize: 200 },
+  'jeera rice': { calories: 180, protein: 4, carbs: 38, fat: 2, servingSize: 200 },
+  'roti': { calories: 71, protein: 3, carbs: 15, fat: 0.4, servingSize: 30 },
+  'chapati': { calories: 71, protein: 3, carbs: 15, fat: 0.4, servingSize: 30 },
+  'naan': { calories: 262, protein: 9, carbs: 45, fat: 5, servingSize: 90 },
+  'paratha': { calories: 180, protein: 4, carbs: 25, fat: 7, servingSize: 60 },
+  'aloo paratha': { calories: 220, protein: 5, carbs: 30, fat: 9, servingSize: 80 },
+  'puri': { calories: 150, protein: 3, carbs: 18, fat: 8, servingSize: 40 },
+  'bhatura': { calories: 280, protein: 6, carbs: 35, fat: 14, servingSize: 80 },
+  'chole bhature': { calories: 450, protein: 15, carbs: 55, fat: 18, servingSize: 200 },
+  'samosa': { calories: 260, protein: 5, carbs: 30, fat: 14, servingSize: 80 },
+  'pakora': { calories: 180, protein: 5, carbs: 18, fat: 10, servingSize: 60 },
+  'bhaji': { calories: 150, protein: 3, carbs: 15, fat: 9, servingSize: 60 },
+  'pav bhaji': { calories: 380, protein: 10, carbs: 50, fat: 16, servingSize: 200 },
+  'vada pav': { calories: 290, protein: 6, carbs: 35, fat: 14, servingSize: 120 },
+  'idli': { calories: 39, protein: 2, carbs: 8, fat: 0.2, servingSize: 40 },
+  'dosa': { calories: 120, protein: 3, carbs: 18, fat: 4, servingSize: 80 },
+  'masala dosa': { calories: 200, protein: 5, carbs: 28, fat: 8, servingSize: 120 },
+  'uttapam': { calories: 150, protein: 4, carbs: 22, fat: 5, servingSize: 100 },
+  'upma': { calories: 180, protein: 5, carbs: 30, fat: 5, servingSize: 150 },
+  'poha': { calories: 160, protein: 4, carbs: 28, fat: 4, servingSize: 150 },
+  'khichdi': { calories: 200, protein: 7, carbs: 35, fat: 4, servingSize: 200 },
+  'raita': { calories: 60, protein: 3, carbs: 5, fat: 3, servingSize: 100 },
+  'lassi': { calories: 150, protein: 5, carbs: 20, fat: 5, servingSize: 200 },
+  'mango lassi': { calories: 180, protein: 5, carbs: 28, fat: 5, servingSize: 200 },
+  'chai': { calories: 80, protein: 2, carbs: 12, fat: 2, servingSize: 150 },
+  'masala chai': { calories: 80, protein: 2, carbs: 12, fat: 2, servingSize: 150 },
+  'gulab jamun': { calories: 150, protein: 2, carbs: 22, fat: 6, servingSize: 50 },
+  'jalebi': { calories: 150, protein: 1, carbs: 30, fat: 4, servingSize: 50 },
+  'kheer': { calories: 180, protein: 5, carbs: 28, fat: 6, servingSize: 150 },
+  'halwa': { calories: 200, protein: 3, carbs: 30, fat: 8, servingSize: 80 },
+  'ladoo': { calories: 180, protein: 4, carbs: 25, fat: 8, servingSize: 50 },
+  'barfi': { calories: 160, protein: 4, carbs: 22, fat: 7, servingSize: 50 },
+  'aloo gobi': { calories: 120, protein: 3, carbs: 15, fat: 6, servingSize: 150 },
+  'baingan bharta': { calories: 130, protein: 3, carbs: 12, fat: 8, servingSize: 150 },
+  'bhindi masala': { calories: 100, protein: 3, carbs: 10, fat: 6, servingSize: 150 },
+  'malai kofta': { calories: 300, protein: 10, carbs: 20, fat: 22, servingSize: 150 },
+  'korma': { calories: 280, protein: 15, carbs: 12, fat: 20, servingSize: 150 },
+  'tikka': { calories: 200, protein: 22, carbs: 6, fat: 10, servingSize: 150 },
+  'kebab': { calories: 220, protein: 18, carbs: 8, fat: 14, servingSize: 100 },
+  'seekh kebab': { calories: 250, protein: 20, carbs: 5, fat: 18, servingSize: 100 },
+  'fish curry': { calories: 200, protein: 20, carbs: 8, fat: 10, servingSize: 150 },
+  'prawn curry': { calories: 180, protein: 18, carbs: 6, fat: 10, servingSize: 150 },
+  'mutton curry': { calories: 280, protein: 22, carbs: 8, fat: 18, servingSize: 150 },
+  'egg curry': { calories: 200, protein: 14, carbs: 8, fat: 13, servingSize: 150 },
+  'thali': { calories: 800, protein: 25, carbs: 100, fat: 30, servingSize: 400 },
+  
   // Proteins
   'chicken': { calories: 165, protein: 31, carbs: 0, fat: 3.6, servingSize: 150 },
   'beef': { calories: 250, protein: 26, carbs: 0, fat: 15, servingSize: 150 },
@@ -91,10 +155,84 @@ export function calculateDailyCalories(age: number, weight: number, height: numb
 export function matchFoodFromLabel(label: string): string {
   const lowerLabel = label.toLowerCase();
   
-  // Check for exact matches or partial matches
+  // Check for exact matches first
+  if (FOOD_DATABASE[lowerLabel]) {
+    return lowerLabel;
+  }
+  
+  // Check for partial matches in database
   for (const food of Object.keys(FOOD_DATABASE)) {
     if (lowerLabel.includes(food) || food.includes(lowerLabel)) {
       return food;
+    }
+  }
+  
+  // Indian food mappings from image classification labels
+  const indianMappings: Record<string, string> = {
+    // Curries and gravies
+    'curry': 'dal',
+    'gravy': 'dal',
+    'stew': 'dal',
+    'lentil': 'dal',
+    'bean': 'rajma',
+    'chickpea': 'chole',
+    'hummus': 'chole',
+    
+    // Breads
+    'flatbread': 'roti',
+    'tortilla': 'roti',
+    'pita': 'naan',
+    'fried bread': 'puri',
+    'stuffed bread': 'paratha',
+    
+    // Rice dishes
+    'fried rice': 'biryani',
+    'rice dish': 'pulao',
+    'rice bowl': 'biryani',
+    'pilaf': 'pulao',
+    
+    // Snacks
+    'fritter': 'pakora',
+    'dumpling': 'samosa',
+    'pastry': 'samosa',
+    'fried snack': 'pakora',
+    
+    // South Indian
+    'crepe': 'dosa',
+    'pancake': 'dosa',
+    'steamed cake': 'idli',
+    'rice cake': 'idli',
+    
+    // Drinks
+    'tea': 'chai',
+    'milkshake': 'lassi',
+    'yogurt drink': 'lassi',
+    
+    // Desserts
+    'dessert': 'kheer',
+    'pudding': 'kheer',
+    'sweet ball': 'gulab jamun',
+    'candy': 'ladoo',
+    'donut': 'jalebi',
+    'fudge': 'barfi',
+    
+    // Proteins
+    'grilled meat': 'tikka',
+    'skewer': 'kebab',
+    'roasted chicken': 'tandoori chicken',
+    'cottage cheese': 'paneer',
+    'cheese cube': 'paneer',
+    
+    // Vegetables
+    'cauliflower': 'aloo gobi',
+    'eggplant': 'baingan bharta',
+    'okra': 'bhindi masala',
+    'spinach dish': 'palak paneer',
+  };
+  
+  for (const [key, value] of Object.entries(indianMappings)) {
+    if (lowerLabel.includes(key)) {
+      return value;
     }
   }
   
@@ -113,10 +251,7 @@ export function matchFoodFromLabel(label: string): string {
     'fries': 'potato',
     'french fries': 'potato',
     'cereal': 'oatmeal',
-    'pancake': 'bread',
-    'waffle': 'bread',
     'cake': 'cookie',
-    'dessert': 'chocolate',
     'ice cream': 'chocolate',
     'soda': 'juice',
     'beverage': 'juice',
