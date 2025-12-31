@@ -15,6 +15,18 @@ interface FoodScannerProps {
 // Popular Indian foods for quick selection
 const POPULAR_FOODS = ['Dal', 'Roti', 'Rice', 'Biryani', 'Paneer', 'Chicken', 'Samosa', 'Dosa', 'Idli', 'Chole', 'Naan', 'Paratha'];
 
+// Labels used for zero-shot image classification (kept intentionally small for speed)
+const CANDIDATE_LABELS = [
+  // Fruits
+  'banana', 'apple', 'orange', 'mango', 'grapes', 'watermelon', 'papaya', 'pineapple', 'pomegranate',
+  // Common Indian foods
+  'dal', 'rajma', 'chole', 'paneer', 'palak paneer', 'butter chicken', 'chicken tikka', 'biryani',
+  'roti', 'naan', 'paratha', 'idli', 'dosa', 'samosa', 'pakora', 'pav bhaji', 'poha', 'upma', 'khichdi',
+  'lassi', 'masala chai',
+  // General foods
+  'salad', 'rice', 'chicken', 'fish', 'egg', 'pizza', 'burger', 'sandwich',
+];
+
 export function FoodScanner({ isOpen, onClose, onAddMeal }: FoodScannerProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -108,30 +120,30 @@ export function FoodScanner({ isOpen, onClose, onAddMeal }: FoodScannerProps) {
     await analyzeImage(dataUrl);
   }, [stopCamera]);
 
-  // Load the image classification pipeline on first use
+  // Load the image classifier on first use (zero-shot for better food recognition)
   const loadClassifier = async () => {
     if (classifierRef.current) return classifierRef.current;
-    
+
     setIsLoadingModel(true);
     try {
       const { pipeline } = await import('@huggingface/transformers');
-      
+
       // Try WebGPU first for better performance
       try {
         classifierRef.current = await pipeline(
-          'image-classification',
-          'Xenova/vit-base-patch16-224',
+          'zero-shot-image-classification',
+          'Xenova/clip-vit-base-patch32',
           { device: 'webgpu' }
         );
       } catch {
         // Fallback to CPU
         classifierRef.current = await pipeline(
-          'image-classification',
-          'Xenova/vit-base-patch16-224',
+          'zero-shot-image-classification',
+          'Xenova/clip-vit-base-patch32',
           { device: 'cpu' }
         );
       }
-      
+
       return classifierRef.current;
     } catch (error) {
       console.error('Error loading classifier:', error);
@@ -143,40 +155,34 @@ export function FoodScanner({ isOpen, onClose, onAddMeal }: FoodScannerProps) {
 
   const analyzeImage = async (imageDataUrl: string) => {
     setIsAnalyzing(true);
-    
+
     try {
       const classifier = await loadClassifier();
-      const results = await classifier(imageDataUrl, { topk: 5 });
-      console.log('Classification results:', results);
-      
-      if (results && results.length > 0) {
-        // Try multiple predictions to find a food match
-        let matchedFood: string | null = null;
-        let bestLabel = results[0].label;
-        
-        for (const result of results) {
-          const foodKey = matchFoodFromLabel(result.label);
-          if (foodKey !== 'food') {
-            matchedFood = foodKey;
-            bestLabel = result.label;
-            break;
-          }
-        }
-        
-        const foodKey = matchedFood || matchFoodFromLabel(bestLabel);
-        const foodData = FOOD_DATABASE[foodKey];
-        
-        setDetectedFood(foodKey.charAt(0).toUpperCase() + foodKey.slice(1));
-        setNutrition({
-          calories: Math.round((foodData.calories * foodData.servingSize) / 100),
-          protein: Math.round((foodData.protein * foodData.servingSize) / 100),
-          carbs: Math.round((foodData.carbs * foodData.servingSize) / 100),
-          fat: Math.round((foodData.fat * foodData.servingSize) / 100),
-        });
-        
-        if (!matchedFood) {
-          toast.info('Food detected! You can adjust or search for a specific dish.');
-        }
+      const results = await classifier(imageDataUrl, CANDIDATE_LABELS, { topk: 5 });
+      console.log('Zero-shot classification results:', results);
+
+      if (!results || results.length === 0) {
+        throw new Error('No classification results');
+      }
+
+      const bestLabel: string = results[0].label;
+      const foodKey = matchFoodFromLabel(bestLabel);
+      const foodData = FOOD_DATABASE[foodKey] ?? FOOD_DATABASE.food;
+
+      setDetectedFood(
+        foodKey === 'food'
+          ? bestLabel
+          : foodKey.charAt(0).toUpperCase() + foodKey.slice(1)
+      );
+      setNutrition({
+        calories: Math.round((foodData.calories * foodData.servingSize) / 100),
+        protein: Math.round((foodData.protein * foodData.servingSize) / 100),
+        carbs: Math.round((foodData.carbs * foodData.servingSize) / 100),
+        fat: Math.round((foodData.fat * foodData.servingSize) / 100),
+      });
+
+      if (foodKey === 'food') {
+        toast.info('Not sure what this is—try manual search or pick from Popular Foods.');
       }
     } catch (error) {
       console.error('Error analyzing image:', error);
