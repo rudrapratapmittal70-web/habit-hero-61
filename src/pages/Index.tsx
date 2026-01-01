@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, UtensilsCrossed } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { ProgressRing } from '@/components/ProgressRing';
 import { HabitCard } from '@/components/HabitCard';
@@ -30,25 +29,6 @@ const Index = () => {
       <Header />
       
       <div className="px-4 space-y-6">
-        {/* Navigation to Nutrition */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <Link to="/nutrition">
-            <div className="bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl p-4 flex items-center gap-4 border border-primary/20 transition-transform active:scale-[0.98]">
-              <div className="w-12 h-12 bg-primary/30 rounded-full flex items-center justify-center">
-                <UtensilsCrossed className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-foreground font-semibold">Nutrition Tracker</p>
-                <p className="text-muted-foreground text-sm">Track calories & macros</p>
-              </div>
-              <div className="text-primary text-2xl">→</div>
-            </div>
-          </Link>
-        </motion.div>
-
         {/* Today's Progress */}
         <motion.div 
           className="bg-card rounded-2xl p-6 shadow-card flex items-center gap-6"
