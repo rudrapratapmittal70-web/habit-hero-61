@@ -4,16 +4,24 @@ import { Habit, DayProgress } from '@/types/habit';
 const STORAGE_KEY = 'habit-tracker-data';
 
 const defaultHabits: Habit[] = [
-  { id: '1', name: 'Drink Water', emoji: '💧', createdAt: new Date().toISOString(), completedDates: [] },
-  { id: '2', name: 'Exercise', emoji: '🏃', createdAt: new Date().toISOString(), completedDates: [] },
-  { id: '3', name: 'Read', emoji: '📚', createdAt: new Date().toISOString(), completedDates: [] },
-  { id: '4', name: 'Meditate', emoji: '🧘', createdAt: new Date().toISOString(), completedDates: [] },
+  { id: '1', name: 'Drink Water', emoji: '💧', createdAt: new Date().toISOString(), completedDates: [], scheduledDays: [0, 1, 2, 3, 4, 5, 6] },
+  { id: '2', name: 'Exercise', emoji: '🏃', createdAt: new Date().toISOString(), completedDates: [], scheduledDays: [1, 3, 5] },
+  { id: '3', name: 'Read', emoji: '📚', createdAt: new Date().toISOString(), completedDates: [], scheduledDays: [0, 1, 2, 3, 4, 5, 6] },
+  { id: '4', name: 'Meditate', emoji: '🧘', createdAt: new Date().toISOString(), completedDates: [], scheduledDays: [0, 1, 2, 3, 4, 5, 6] },
 ];
 
 export const useHabits = () => {
   const [habits, setHabits] = useState<Habit[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : defaultHabits;
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Migrate old habits that don't have scheduledDays
+      return parsed.map((h: Habit) => ({
+        ...h,
+        scheduledDays: h.scheduledDays ?? [0, 1, 2, 3, 4, 5, 6]
+      }));
+    }
+    return defaultHabits;
   });
 
   useEffect(() => {
@@ -21,6 +29,7 @@ export const useHabits = () => {
   }, [habits]);
 
   const today = new Date().toISOString().split('T')[0];
+  const todayDayOfWeek = new Date().getDay();
 
   const toggleHabit = (habitId: string) => {
     setHabits(prev => prev.map(habit => {
@@ -36,13 +45,14 @@ export const useHabits = () => {
     }));
   };
 
-  const addHabit = (name: string, emoji: string) => {
+  const addHabit = (name: string, emoji: string, scheduledDays: number[] = [0, 1, 2, 3, 4, 5, 6]) => {
     const newHabit: Habit = {
       id: Date.now().toString(),
       name,
       emoji,
       createdAt: new Date().toISOString(),
-      completedDates: []
+      completedDates: [],
+      scheduledDays
     };
     setHabits(prev => [...prev, newHabit]);
   };
@@ -62,7 +72,6 @@ export const useHabits = () => {
         streak++;
         checkDate.setDate(checkDate.getDate() - 1);
       } else if (i === 0) {
-        // Allow today to be incomplete
         checkDate.setDate(checkDate.getDate() - 1);
         if (sortedDates.includes(checkDate.toISOString().split('T')[0])) {
           streak++;
@@ -78,6 +87,10 @@ export const useHabits = () => {
     return streak;
   };
 
+  const getTodaysHabits = () => {
+    return habits.filter(h => h.scheduledDays.includes(todayDayOfWeek));
+  };
+
   const getWeekProgress = (): DayProgress[] => {
     const progress: DayProgress[] = [];
     const now = new Date();
@@ -86,9 +99,11 @@ export const useHabits = () => {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split('T')[0];
+      const dayOfWeek = date.getDay();
       
-      const completed = habits.filter(h => h.completedDates.includes(dateStr)).length;
-      const total = habits.length;
+      const scheduledHabits = habits.filter(h => h.scheduledDays.includes(dayOfWeek));
+      const completed = scheduledHabits.filter(h => h.completedDates.includes(dateStr)).length;
+      const total = scheduledHabits.length;
       
       progress.push({
         date: dateStr,
@@ -102,11 +117,12 @@ export const useHabits = () => {
   };
 
   const getTodayProgress = () => {
-    const completed = habits.filter(h => h.completedDates.includes(today)).length;
+    const todaysHabits = getTodaysHabits();
+    const completed = todaysHabits.filter(h => h.completedDates.includes(today)).length;
     return {
       completed,
-      total: habits.length,
-      percentage: habits.length > 0 ? Math.round((completed / habits.length) * 100) : 0
+      total: todaysHabits.length,
+      percentage: todaysHabits.length > 0 ? Math.round((completed / todaysHabits.length) * 100) : 0
     };
   };
 
@@ -120,6 +136,7 @@ export const useHabits = () => {
     getStreak,
     getWeekProgress,
     getTodayProgress,
-    isCompletedToday
+    isCompletedToday,
+    getTodaysHabits
   };
 };
