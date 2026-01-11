@@ -1,48 +1,34 @@
-import { motion } from 'framer-motion';
 import { DayProgress } from '@/types/habit';
 
 interface WeeklyChartProps {
   data: DayProgress[];
 }
 
-const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 export const WeeklyChart = ({ data }: WeeklyChartProps) => {
-  const maxHeight = 100;
+  const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-card">
-      <h3 className="section-title">This Week</h3>
-      <div className="flex items-end justify-between gap-2 h-32">
-        {data.map((day, index) => {
+    <div className="bg-card rounded-xl p-4 border border-border">
+      <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">This Week</h3>
+      <div className="flex justify-between items-end gap-2">
+        {data.map((day) => {
           const date = new Date(day.date);
           const dayName = dayNames[date.getDay()];
           const isToday = day.date === new Date().toISOString().split('T')[0];
-          const barHeight = (day.percentage / 100) * maxHeight;
 
           return (
-            <div key={day.date} className="flex flex-col items-center gap-2 flex-1">
-              <div className="relative w-full h-24 flex items-end justify-center">
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: barHeight }}
-                  transition={{ delay: index * 0.1, duration: 0.5, ease: "easeOut" }}
-                  className={`w-full max-w-8 rounded-t-lg ${
-                    isToday ? 'bg-primary' : 'bg-muted'
+            <div key={day.date} className="flex flex-col items-center flex-1">
+              <div className="h-16 w-full flex items-end justify-center mb-2">
+                <div
+                  className={`w-full max-w-[24px] rounded-sm transition-all ${
+                    isToday ? 'bg-foreground' : 'bg-muted-foreground/40'
                   }`}
+                  style={{ 
+                    height: `${Math.max(day.percentage * 0.64, 4)}px`
+                  }}
                 />
-                {day.percentage > 0 && (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: index * 0.1 + 0.3 }}
-                    className="absolute -top-5 text-xs font-medium text-muted-foreground"
-                  >
-                    {day.percentage}%
-                  </motion.span>
-                )}
               </div>
-              <span className={`text-xs font-medium ${isToday ? 'text-primary' : 'text-muted-foreground'}`}>
+              <span className={`text-xs ${isToday ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
                 {dayName}
               </span>
             </div>
