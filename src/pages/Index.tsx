@@ -6,14 +6,21 @@ import { ProgressRing } from '@/components/ProgressRing';
 import { HabitCard } from '@/components/HabitCard';
 import { WeeklyChart } from '@/components/WeeklyChart';
 import { AddHabitModal } from '@/components/AddHabitModal';
+import { EditHabitModal } from '@/components/EditHabitModal';
 import { useHabits } from '@/hooks/useHabits';
+import { Habit } from '@/types/habit';
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  
   const { 
     toggleHabit, 
     addHabit, 
+    updateHabit,
     removeHabit, 
+    reorderHabits,
     getStreak, 
     getWeekProgress, 
     getTodayProgress,
@@ -24,6 +31,21 @@ const Index = () => {
   const todayProgress = getTodayProgress();
   const weekProgress = getWeekProgress();
   const todaysHabits = getTodaysHabits();
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (dropIndex: number) => {
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      reorderHabits(draggedIndex, dropIndex);
+    }
+    setDraggedIndex(null);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -73,6 +95,11 @@ const Index = () => {
                     streak={getStreak(habit)}
                     onToggle={() => toggleHabit(habit.id)}
                     onRemove={() => removeHabit(habit.id)}
+                    onEdit={() => setEditingHabit(habit)}
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(index)}
+                    isDragging={draggedIndex === index}
                   />
                 </motion.div>
               ))}
@@ -107,6 +134,13 @@ const Index = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAdd={addHabit}
+      />
+
+      <EditHabitModal
+        habit={editingHabit}
+        isOpen={!!editingHabit}
+        onClose={() => setEditingHabit(null)}
+        onSave={updateHabit}
       />
     </div>
   );
