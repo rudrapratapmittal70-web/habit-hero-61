@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Flame, Trash2 } from 'lucide-react';
+import { Check, Flame, Trash2, Pencil, GripVertical } from 'lucide-react';
 import { Habit } from '@/types/habit';
 
 interface HabitCardProps {
@@ -8,19 +8,43 @@ interface HabitCardProps {
   streak: number;
   onToggle: () => void;
   onRemove: () => void;
+  onEdit: () => void;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: () => void;
+  isDragging: boolean;
 }
 
 const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-export const HabitCard = ({ habit, isCompleted, streak, onToggle, onRemove }: HabitCardProps) => {
+export const HabitCard = ({ 
+  habit, 
+  isCompleted, 
+  streak, 
+  onToggle, 
+  onRemove, 
+  onEdit,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  isDragging,
+}: HabitCardProps) => {
   return (
     <motion.div
       layout
       initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={{ opacity: isDragging ? 0.5 : 1, y: 0 }}
       exit={{ opacity: 0, x: -50 }}
-      className="habit-card flex items-center gap-4"
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      className="habit-card flex items-center gap-3 cursor-grab active:cursor-grabbing"
     >
+      <div className="text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+        <GripVertical className="w-4 h-4" />
+      </div>
+
       <button
         onClick={onToggle}
         className={`habit-checkbox flex-shrink-0 ${isCompleted ? 'checked' : ''}`}
@@ -67,6 +91,13 @@ export const HabitCard = ({ habit, isCompleted, streak, onToggle, onRemove }: Ha
           <span>{streak}</span>
         </div>
       )}
+
+      <button
+        onClick={onEdit}
+        className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <Pencil className="w-4 h-4" />
+      </button>
 
       <button
         onClick={onRemove}

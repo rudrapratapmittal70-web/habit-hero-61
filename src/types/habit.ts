@@ -5,6 +5,7 @@ export interface Habit {
   createdAt: string;
   completedDates: string[];
   scheduledDays: number[]; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  order: number;
 }
 
 export interface DayProgress {
